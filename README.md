@@ -5,6 +5,35 @@ This project consists of two main tasks focusing on Ethiopian Telegram e-commerc
 
 ---
 
+# Setup Instructions
+Clone the repository:
+
+git clone https://github.com/your-username/telegram-ner-labeling.git
+cd telegram-ner-labeling
+Create a virtual environment (optional but recommended):
+
+
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+Install dependencies:
+
+pip install -r requirements.txt
+🚀 How to Use
+Task 1: Ingest and Preprocess Data
+Configure the Telegram API credentials in config.py or .env.
+
+Run the ingestion script:
+
+python ingest_telegram_data.py
+
+The preprocessed data will be saved in the data/ folder.
+
+Task 2: Label Dataset in CoNLL Format
+Open label_data.py to manually or semi-automatically tag messages.
+
+python label_data.py
+Labeled outputs are saved to labeled_data.conll.
+
 ## Task 1: Data Ingestion and Data Preprocessing
 
 **Goal:**  
