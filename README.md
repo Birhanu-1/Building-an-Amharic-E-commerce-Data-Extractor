@@ -66,69 +66,90 @@ python label_data.py
 Use Google Colab or any GPU-enabled environment.
 
 ## Install required libraries:
+
+```bash
 pip install transformers datasets evaluate seqeval pandas
+```
 ## Ensure your labeled CoNLL-format data is converted to a Python dictionary like:
+```bash
 data = {
     "tokens": [["በአዲስ", "አበባ"]],
     "ner_tags": [[0, 1, 2, 3]]  # Use correct tag IDs
 }
+```
 Load and tokenize using a pre-trained model (e.g. Davlan/afroxlmr-base or bert-tiny-amharic).
 
 ## Fine-tune with Hugging Face Trainer:
+```
 from transformers import Trainer, TrainingArguments
+```
 ## Save the model locally after training:
-
+```bash
 trainer.save_model("./amharic-ner-model")
+```
 ## Task 4: Model Comparison & Selection
 ## 🔧 Setup Instructions
 ## Train and save multiple models (XLM-Roberta, mBERT, DistilBERT).
 
 ## Evaluate with seqeval:
+```bash
 pip install seqeval evaluate
+```
 #  Compare on:
+```bash
  F1 Score
  Training time
  Inference speed
+```
 
 ## Generate plots with:
-
+```bash
 import matplotlib.pyplot as plt
+```
 Choose the best model and log your selection rationale (e.g., accuracy vs resource trade-offs).
 
 ## Task 5: Model Interpretability
 ## 🔧 Setup Instructions
 ## Install interpretable libraries:
+```bash 
 pip install shap lime
 Use a small sample (e.g., "በአዲስ አበባ አሸንፏል") for testing.
+```
 
 ## Run SHAP for transformer models:
-
+```bash 
  import shap
  Use LIME for local prediction insights:
  from lime.lime_text import LimeTextExplainer
+```
 ## Generate report:
-
+```bash 
   SHAP plot
   LIME feature importance
-  Save in .json or .html
+  Save in .json or .HTML
+```
 
 ## Task 6: Vendor Scorecard
 ## 🔧 Setup Instructions
 ## Prepare your local scraped CSV with columns:
-
+```bash 
 mathematica
 Channel Title, Channel Username, ID, Message, Date
+```
 ## Install necessary libraries:
-
+```bash 
 pip install pandas
+```
 
 ## Update your script to rename and parse:
+```bash
 vendor_df.rename(columns={
     'Channel Title': 'vendor_id',
     'Message': 'text',
     'Date': 'timestamp',
     'ID': 'views'
 }, inplace=True)
+```
 ## Extract metrics:
 
    -- Avg. Views
@@ -138,9 +159,9 @@ vendor_df.rename(columns={
    -- Lending Score
 
 ### Generate a scorecard:
-
+```bash 
 pd.DataFrame([...]).to_csv("vendor_scorecard.csv")
-
+```
 
 
 
