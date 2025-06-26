@@ -1,0 +1,70 @@
+# Task 6: FinTech Vendor Scorecard for Micro-Lending (Local Data)
+
+import pandas as pd
+from datetime import datetime
+from collections import defaultdict
+import json
+import os
+
+# 1. Load scraped local vendor posts data from CSV
+vendor_df = pd.read_csv("../data1/telegram_data.csv")
+
+
+# Rename and normalize columns to expected format
+vendor_df.rename(columns={
+    'Channel Title': 'vendor_id',
+    'Message': 'text',
+    'Date': 'timestamp',
+    'ID': 'views'  # Assuming ID column actually holds view counts; update this if wrong
+}, inplace=True)
+
+# Drop rows with missing essential data
+vendor_df.dropna(subset=['vendor_id', 'text', 'timestamp'], inplace=True)
+
+# 2. Extract price from text using simple regex (customize this if you have NER outputs)
+def extract_price(text):
+    import re
+    matches = re.findall(r"\d+", str(text))
+    prices = [int(m) for m in matches if 5 < int(m) < 5000]
+    return prices[0] if prices else None
+
+# 3. Function to compute vendor metrics
+def calculate_vendor_metrics(df):
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    df['week'] = df['timestamp'].dt.to_period('W')
+
+    posts_per_week = df.groupby('week').size().mean()
+    avg_views = df['views'].mean()
+
+    top_post = df.loc[df['views'].idxmax()]
+    top_post_text = top_post['text']
+    top_post_views = top_post['views']
+    top_post_price = extract_price(top_post_text)
+
+    df['price'] = df['text'].apply(extract_price)
+    avg_price = df['price'].dropna().mean()
+
+    lending_score = (avg_views * 0.5) + (posts_per_week * 10)
+
+    return {
+        "Avg Views/Post": round(avg_views, 2),
+        "Posts/Week": round(posts_per_week, 2),
+        "Avg Price (ETB)": round(avg_price, 2) if pd.notnull(avg_price) else None,
+        "Top Product": top_post_text,
+        "Top Views": top_post_views,
+        "Top Price": top_post_price,
+        "Lending Score": round(lending_score, 2)
+    }
+
+# 4. Process all vendors
+grouped = vendor_df.groupby("vendor_id")
+summary_data = []
+for vendor_id, group in grouped:
+    metrics = calculate_vendor_metrics(group)
+    metrics["Vendor ID"] = vendor_id
+    summary_data.append(metrics)
+
+# 5. Show results
+scorecard_df = pd.DataFrame(summary_data)
+print("\nVendor Scorecard:")
+print(scorecard_df[["Vendor ID", "Avg Views/Post", "Posts/Week", "Avg Price (ETB)", "Lending Score"]])
